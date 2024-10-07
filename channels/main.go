@@ -1,35 +1,31 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"unicode"
+)
+
+func countLetters(str string) map[rune]int {
+	letterCount := make(map[rune]int)
+
+	for _, char := range str {
+		// Check if the character is a letter
+		if unicode.IsLetter(char) {
+			letterCount[char]++
+		}
+	}
+
+	return letterCount
+}
 
 func main() {
-	c := make(chan int)
-	go func(i int) {
-		result := i * 5
-		c <- result
-	}(5)
-	result := <-c
+	str := "Hello, Go! How are you?"
 
-	my := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	// Count letters in the string
+	counts := countLetters(str)
 
-	removeindex := 5
-
-	my = append(my[:removeindex], my[removeindex+1:]...)
-
-	fmt.Println(result)
-	fmt.Println(my)
-	println(len(my))
-
-	ch := make(chan int)
-	go func() {
-		for i := 0; i < 5; i++ {
-			ch <- i
-		}
-		close(ch) // Close the channel
-	}()
-
-	for value := range ch { // Receive values until the channel is closed
-		fmt.Println(value)
+	// Print the letter counts
+	for letter, count := range counts {
+		fmt.Printf("%c: %d\n", letter, count)
 	}
-	fmt.Scanln()
 }
