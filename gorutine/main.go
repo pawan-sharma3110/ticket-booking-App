@@ -29,9 +29,11 @@ func taskB() {
 }
 
 func main() {
-	wg.Add(2) // We have two tasks to wait for
+	wg.Add(1) // We have two tasks to wait for
 
 	go taskA() // Launch Task A in a goroutine
+	wg.Add(1)  // We have two tasks to wait for
+
 	go taskB() // Launch Task B in a goroutine
 	wg.Wait()
 
