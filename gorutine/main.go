@@ -3,23 +3,39 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
-var wg = sync.WaitGroup{}
+var wg sync.WaitGroup
 
-func sayHello() {
-	for i := 0; i < 10; i++ {
-		fmt.Println("Hello from Goroutine!")
+// taskA performs some work and signals completion
+func taskA() {
+	defer wg.Done() // Decrement the waitgroup counter when done
+	fmt.Println("Starting Task A...")
+	time.Sleep(2 * time.Second) // Simulate work
+	fmt.Println("Task A completed!")
+}
 
-	}
-	wg.Done()
+// taskB waits for taskA to finish and then starts its work
+func taskB() {
+	defer wg.Done() // Decrement the waitgroup counter when done
+	fmt.Println("Waiting for Task A to complete...")
+
+	// Simulate some dependency on Task A's completion
+	time.Sleep(1 * time.Second)
+	fmt.Println("Task B can start now after Task A.")
+	time.Sleep(1 * time.Second) // Simulate work
+	fmt.Println("Task B completed!")
 }
 
 func main() {
-	// Launching a goroutine
-	wg.Add(1)
-	go sayHello()
+	wg.Add(2) // We have two tasks to wait for
 
-	fmt.Println("Main Goroutine Finished")
+	go taskA() // Launch Task A in a goroutine
+	go taskB() // Launch Task B in a goroutine
 	wg.Wait()
+
+	// Wait for all tasks to complete
+	fmt.Println("All tasks completed!")
+
 }
